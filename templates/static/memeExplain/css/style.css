@@ -1,0 +1,36 @@
+body{
+    color: black;}
+    
+  #blink_text{	
+    animation-name:blink;
+    width:280px;
+    animation-duration:2s;
+    animation-timing-function:ease-in;
+    animation-iteration-count:Infinite;
+    font-size: x-large;
+    }
+  
+  @keyframes blink{
+    0%{color:red;}
+    50%{color:white;}
+    100%{color:red;}
+  }
+
+  /* .fcc-btn {
+    background-color: #199319;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-large;
+    color: black;
+    padding: 15px 25px;
+    text-decoration: none;
+  }
+  /* .fcc-btn{
+    color: red; 
+    font-family: 'Courier New', Courier, monospace; 
+    font-size: x-large;
+  } */
+
+  /* .fcc-btn:hover {
+    background-color: #223094;
+  } */
+

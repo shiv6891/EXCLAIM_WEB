@@ -1,0 +1,241 @@
+{% extends 'template.html' %}
+{% block content %}
+
+<style>
+.carousel {
+  width:440px;
+  height:150px;
+}
+
+.carousel-inner > .item > img {
+  width:420px;
+  height:150px;
+}
+
+
+
+
+
+
+</style>
+<script>
+$('.collapse').collapse()
+var max={{nums}}
+var currentIndex_active = $('div.item.active').index() + 1
+function plus_textbox(){
+    if(currentIndex_active<max){
+        currentIndex_active=currentIndex_active+1;
+        //alert(currentIndex_active)
+        document.getElementById("slide_id").setAttribute('value', currentIndex_active)
+       btn = document.getElementById("btn_slide_id")
+        btn.innerHTML =  'Verify Tweet # '+currentIndex_active
+    }
+}
+
+function minus_textbox(){
+    if(currentIndex_active>0){
+        currentIndex_active=currentIndex_active-1
+        //alert(currentIndex_active)
+        document.getElementById("slide_id").setAttribute('value', currentIndex_active)
+        btn = document.getElementById("btn_slide_id")
+        btn.innerHTML = 'Verify Tweet # '+currentIndex_active
+
+    }
+
+}
+
+$('#carouselExampleIndicators').on('slid.bs.carousel', function () {
+    var currentSlide = $('#carouselExampleIndicators div.active').index();
+    sessionStorage.setItem('lastSlide', currentSlide);
+});
+
+if(sessionStorage.lastSlide){
+  $("#carouselExampleIndicators").carousel(sessionStorage.lastSlide*1);
+}
+
+function verify(){
+document.getElementById('frm_hate').submit();
+}
+
+
+
+
+
+
+
+
+
+</script>
+<section class="ftco-cover" id="section-hateapp"
+         data-aos="fade" data-stellar-background-ratio="0.5">
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <br>
+            <br>
+            <h2 class="ftco-heading mb-5 text-secondary" data-aos="fade-up" data-aos-delay="500">
+                EXCLAIM RESULTS
+            </h2>
+            <h4 style="display: inline-block;">For {{data.N}} image(s) |</h4>
+            <span style="margin-right: 100px;"><i>Time Elapsed: {{data.timeel}} seconds.</i></span>
+            <ul class="list-group">
+                {% set x = 0%}
+                {% for k, v in data.json.items()%}
+                {% set x = loop.index %}
+
+
+                <li class="list-group-item">
+                    <div class="alert alert-secondary" role="alert">
+                        <!--<strong>Meme Explanation Generation for Image {{x}}: {{k}} | <i>{{v|length}} result(s)</i></strong><br>-->
+                        <strong>Meme Explanation Generation for Image {{x}} | <i>{{v|length}} result(s)</i></strong><br>
+                    </div>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong class="font-weight-bold">Caption:</strong> <p class="font-italic text-dark">{{v[0]['caption']}}</p>
+                        <strong class="font-weight-bold">Meme Content:</strong> <p class="font-italic text-dark">{{v[0]['ocr']}}</p>
+
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+                   <img src="{{ url_for('static', filename='EXCLAIM_Samples/'+k) }}" class="img-thumbnail round float-left"
+                         alt="..."
+                         width="300">
+
+
+                    <div class="media-body">
+                        <!-- <table class="table table-condensed table-striped">
+     <thead>
+         <th>{{x}} {{ loop.index }}</th>
+     </thead>
+
+     <tbody>
+
+         <tr data-toggle="collapse" data-target="#demo{{x}}" class="accordion-toggle">
+
+            <td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span><img src="{{ url_for('static', filename='uploads/'+k) }}" class="img-thumbnail float-left" alt="..."
+                          width="50"></button></td>
+
+
+         </tr>
+      <tr>
+             <td colspan="12" class="hiddenRow">
+                             <div class="accordian-body collapse" id="demo{{x}}">
+               <table class="table table-striped">
+                       <thead>
+                         <tr class="info">
+                                                     <th></th>
+           <th>Entity</th>
+           <th>Role</th>
+           <th>Explanation</th>
+           <th>Confidence</th>
+                                                 </tr>
+                                             </thead>
+
+                                             <tbody>
+  {% for i in range(v|length) %}
+                         <tr data-toggle="collapse"  class="accordion-toggle" data-target="#demo10">
+                                                     <td><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span><img src="{{ url_for('static', filename='uploads/'+k) }}" class="img-thumbnail float-left" alt="..."
+                          width="50"></button></td>
+
+             <td><strong class="text-info">{{v[i]['ent']}}</strong></td>
+             <td><strong class="text-info">{{v[i]['role']}}</strong></td>
+             <td><strong>{{v[i]['exp']}}</strong></td>
+             <td><strong class="text-info">{{'%0.2f'| format(v[i]['prob']*100|float)}}%</strong></td>
+
+                         </tr>
+  {% endfor %}
+                       </tbody>
+                    </table>
+
+               </div>
+           </td>
+         </tr>
+
+
+     </tbody>
+ </table>-->
+                        <p class="text-secondary"> Following entities analysed | Click &#9660; for each item to view results.<br>
+                            {% for i in range(v|length) %}
+                            <a class="btn btn-success dropdown-toggle" data-toggle="collapse" href="#multiCollapseExample{{x}}{{i}}"
+                               role="button" aria-expanded="false" aria-controls="multiCollapseExample{{x}}{{i}}">
+                                {{v[i]['ent']}}
+                            </a>
+                            {% endfor %}
+
+                        </p>
+                        <div class="row">
+                            {% for i in range(v|length) %}
+                            <div class="col">
+                                <div class="collapse multi-collapse" id="multiCollapseExample{{x}}{{i}}">
+                                    <div class="card card-header">Explanation# {{i+1}}: <strong>{{v[i]['exp']}}</strong>
+                                    </div>
+                                    <div class="card card-body">
+
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">Entity: <strong class="text-info">{{v[i]['ent']}}</strong>
+                                            </li>
+                                            <li class="list-group-item">Role: <strong
+                                                    class="text-info">{{v[i]['role']}}</strong></li>
+                                            <li class="list-group-item">Confidence of Role: <strong class="text-info">{{v[i]['prob']}}</strong>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!--<div class="accordion" id="accordionExample{{x}}">
+                            {% for i in range(v|length) %}
+                            <div class="card">
+                                <div class="card-header" id="heading{{x}}{{(i+1)}}">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse"
+                                                data-target="#collapse{{x}}{{(i+1)}}" aria-expanded="true"
+                                                aria-controls="collapse{{x}}{{(i+1)}}">
+                                            Explanation #{{(i+1)|string}}: <strong>{{v[i]['exp']}}</strong>
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="collapse{{x}}{{(i+1)}}" class="collapse" aria-labelledby="headingOne"
+                                     data-parent="#accordionExample{{x}}">
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">Entity: <strong class="text-info">{{v[i]['ent']}}</strong>
+                                            </li>
+                                            <li class="list-group-item">Role: <strong
+                                                    class="text-info">{{v[i]['role']}}</strong></li>
+                                            <li class="list-group-item">Confidence of Role: <strong class="text-info">{{v[i]['prob']}}</strong>
+                                            </li>
+                                            <li class="list-group-item">Explanation: <strong>{{v[i]['exp']}}</strong>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+-->
+                    </div>
+                </li>
+
+                {% endfor %}
+            </ul>
+        </div>
+
+
+    </div>
+</section>
+
+
+<!--
+
+
+ #hp  {
+    float: none;    
+     margin: 0 15px 0 0;
+    } -->
+
+<!-- "" -->
+{% endblock %}

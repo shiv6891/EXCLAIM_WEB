@@ -1,0 +1,351 @@
+{% extends 'template.html' %}
+
+{% block content %}
+
+
+<section class="ftco-cover" id="section-hateapp" style="background-image: url('static/memeExplain/images/bg5.png');
+  width: 100%;
+  height: auto;"
+         data-aos="fade" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="col-md-7">
+            <br>
+            <br>
+            <br>
+            <!-- <h1 class="ftco-heading mb-3 text-dark" data-aos="fade-up" data-aos-delay="500">Meme Explain</h1> -->
+            <h3 class="h5 ftco-subheading mb-5 text-dark" data-aos="fade-up" data-aos-delay="600">
+                <strong>EXCLAIM:</strong> g<strong>E</strong>nerating e<strong>X</strong>planations for visual
+                semanti<strong>C</strong> ro<strong>L</strong>e
+                l<strong>A</strong>beling <strong>I</strong>n <strong>M</strong>emes</h3>
+
+            <div id="blink_text" style="font-size: x-large" class="shadow p-3 mb-5 bg-white rounded">
+                Check out a few samples for DEMO! <i class="fa fa-hand-o-right" style="font-size:36px"></i> <a
+                    class="btn btn-outline-secondary text-secondary" href="/demo">
+                PROCEED</a>
+            </div>
+            <!-- <form action="{{ url_for('upload') }}" method="post" class="was-validated"
+                   enctype="multipart/form-data">
+                 <div class="input-group is-invalid">
+                     <div class="custom-file">
+
+
+                         <div class="custom-file">
+                             <input type="file" name="image" multiple class="custom-file-input"
+                                    id="validatedInputGroupCustomFile" required>
+                             <label class="custom-file-label" for="validatedInputGroupCustomFile">Upload Meme(s)
+                                 here...</label>
+                         </div>
+                         <div class="input-group-append">
+                             <button class="btn btn-outline-secondary" type="submit">Check</button>
+                         </div>
+
+                     </div>
+
+                 </div>
+             </form>-->
+            <br>
+            <div class="row">
+                <div class="row align-items-center ftco-vh-100">
+
+                    <div class="card text-secondary" style="width: 44rem;">
+                        <img class="card-img-top" src="static/memeExplain/images/meme.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <div class="alert alert-info" role="alert">
+                                    <strong>Extraction of Insights from Memes and Explain</strong>
+                                    <img class="card-img-top" src="static/memeExplain/images/memeEx.png"
+                                         alt="Card image cap">
+                                </div>
+
+                            </h5>
+                            <p class="card-text text-secondary">EXCLAIM identifies the <strong
+                                    style="color:blue">hero</strong>, the <strong style="color:red">villain</strong>,
+                                and the <strong style="color:green">victim</strong> entities present in a meme and
+                                generates
+                                corresponding
+                                explanation based on the creator point of view.</p>
+                            <a href="https://aclanthology.org/2022.constraint-1.1.pdf"
+                               class="btn btn-outline-secondary text-secondary">More Information</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+<style>
+    .scrollable-menu {
+    height: auto;
+    max-height: 250px;
+    overflow-x: hidden;
+}
+
+
+</style>
+<script>
+    function  showCart(image) {
+
+        //document.getElementByID('').innerHTML = image
+        var cartItem = {
+		    productName: image
+	    };
+        var cartItemJSON = JSON.stringify(cartItem);
+
+        var cartArray = new Array();
+        // If javascript shopping cart session is not empty
+        if (sessionStorage.getItem('shopping-cart')) {
+            cartArray = JSON.parse(sessionStorage.getItem('shopping-cart'));
+        }
+        cartArray.push(cartItemJSON);
+
+        var cartJSON = JSON.stringify(cartArray);
+        if(cartArray.length <= 7){
+            sessionStorage.setItem('shopping-cart', cartJSON);
+        }else{
+            document.getElementById('cartAlertMsg').hidden=false;
+			document.getElementById('cartAlertMsg').innerHTML = "Sorry, I can allow maximum 7 memes.";
+        }
+        showCartTable();
+    }
+
+    var viewHTML="";
+
+    function showCartTable() {
+
+	var itemCount = 0;
+	var grandTotal = 0;
+
+	var price = 0;
+	var quantity = 0;
+	var subTotal = 0;
+
+	if (sessionStorage.getItem('shopping-cart')) {
+	    var cartRowHTML = "";
+		var shoppingCart = JSON.parse(sessionStorage.getItem('shopping-cart'));
+		itemCount = shoppingCart.length;
+        //if (itemCount < 4){
+            //Iterate javascript shopping cart array
+            shoppingCart.forEach(function(item) {
+                var cartItem = JSON.parse(item);
+
+                cartRowHTML += //"<tr>" +
+                    "<td>"
+                    + "<div class=\"card mb-3\">"
+                    + "<div class=\"card-body\">"
+                    + "<div class=\"d-flex justify-content-between\">"
+                    + "<div class=\"d-flex flex-row align-items-center\">"
+                    + "<div>\n"
+                    + "<img src=\""+cartItem.productName+"\" class=\"img-fluid rounded-3\" style=\"width: 100px;\" \>"
+
+                    + "</div></div></div></div></div>"
+                    + "</td>" ;
+                    //+ "</tr>";
+
+
+                //grandTotal += subTotal;
+            });
+        if(cartRowHTML){
+		    viewHTML = cartRowHTML;
+		}
+		/*}else{
+			itemCount=3;
+			document.getElementById('cartAlertMsg').hidden=false;
+			document.getElementById('cartAlertMsg').innerHTML = "Sorry, I can allow maximum 7 memes.";
+            // alert(viewHTML);
+			document.getElementById('cartTableBodyRow').innerHTML = viewHTML;
+			// TODO: fire a alert message
+		}*/
+
+	}
+    viewHTML = cartRowHTML;
+	$('#cartTableBodyRow').html(cartRowHTML);
+	//$('#itemCount').text(itemCount);
+	$('#lblCount').text(itemCount);
+	$('#lblCounte').text(itemCount);
+	//$('#totalAmount').text("$" + grandTotal.toFixed(2));
+}
+
+function emptyCart() {
+	if (sessionStorage.getItem('shopping-cart')) {
+		// Clear JavaScript sessionStorage by index
+		sessionStorage.removeItem('shopping-cart');
+		showCartTable();
+		cartRowHTML = "";
+		viewHTML="";
+		document.getElementById('cartAlertMsg').hidden=true;
+		document.getElementById('cartTableBodyRow').innerHTML = viewHTML;
+	}
+}
+function viewCart() {
+
+	$('#cartTableBodyRow').html(viewHTML);
+	showCartTable();
+}
+
+$(document).ready(function() {
+    var shoppingCart = JSON.parse(sessionStorage.getItem('shopping-cart'));
+    itemCount = shoppingCart.length;
+    $('#cartTableBodyRow').html(viewHTML);
+    $('#lblCount').text(itemCount);
+	$('#lblCounte').text(itemCount);
+	showCartTable();
+
+});
+
+function checkAnalyse()
+{
+    var shoppingCart = JSON.parse(sessionStorage.getItem('shopping-cart'));
+    var postArray = "" ;
+    shoppingCart.forEach(function(item) {
+          var cartItem = JSON.parse(item);
+          postArray+=cartItem.productName.replace("static/EXCLAIM_Samples/","") +"\t";
+    });
+    
+    const form = document.createElement('form');
+    form.method = "POST";
+    form.action = "{{ url_for('upload') }}";
+    form.enctype="multipart/form-data";
+
+    const hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = 'image';
+
+    hiddenField.value = postArray;
+
+    form.appendChild(hiddenField);
+    document.body.appendChild(form);
+    form.submit();
+
+}
+
+
+</script>
+<!--
+<section id="section-limitation" class="bg-light text-primary">
+    <div class="container">
+        <div class="col-md-9">
+            <br>
+            <br>
+            <h3 class="h5 ftco-subheading mb-5 text-dark" data-aos="fade-up" data-aos-delay="600">
+                <strong>EXCLAIM:</strong> g<strong>E</strong>nerating e<strong>X</strong>planations for visual
+                semanti<strong>C</strong> roLe
+                <strong>LA</strong>beling <strong>I</strong>n <strong>M</strong>emes</h3>
+            <div class="row">
+                <div class="row align-items-center ftco-vh-100">
+                    <div class="btn-group">
+
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu1"
+                                    data-toggle="dropdown">
+                                <h6>Example with Single Entity</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent1 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu2"
+                                    data-toggle="dropdown">
+                                <h6>Example with Two Entities</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent2 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu3"
+                                    data-toggle="dropdown">
+                                <h6>Example with Three Entities</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent3 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu4"
+                                    data-toggle="dropdown">
+                                <h6>Example with Four Entities</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent4 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" role="alert" id="cartAlertMsg" hidden></div>
+                    <div class="container py-5 h-100">
+                        <div class="row d-flex justify-content-center align-items">
+                            <div id="shopping-cart">
+                                <div class="txt-heading">
+                                    <h1>Selected Memes</h1>
+                                </div>
+                                <button class="btn btn-danger" onClick="emptyCart()" id="btnEmpty">Empty Selection
+                                    <label id="lblCounte"></label>
+                                </button>
+                                <button class="btn btn-success" onClick="viewCart()" id="btnView">Selected <label
+                                        id="lblCount"></label>
+                                </button>
+                                <button class="btn brn-secondary" onclick="checkAnalyse();">Check and Analyse
+                                </button>
+                                <table class="tbl-cart" cellpadding="10" cellspacing="1">
+                                    <thead>
+
+                                    </thead>
+
+                                    <tbody id="cartTableBody">
+                                    <tr id="cartTableBodyRow"></tr>
+                                    </tbody>
+                                    <tfoot>
+
+                                    </tfoot>
+                                </table>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+-->
+{% endblock %}

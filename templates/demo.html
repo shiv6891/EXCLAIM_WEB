@@ -1,0 +1,308 @@
+{% extends 'template.html' %}
+{% block content %}
+
+<style>
+    .scrollable-menu {
+    height: auto;
+    max-height: 250px;
+    overflow-x: hidden;
+}
+
+
+</style>
+<script>
+    function  showCart(image) {
+
+        //document.getElementByID('').innerHTML = image
+        var cartItem = {
+		    productName: image
+	    };
+        var cartItemJSON = JSON.stringify(cartItem);
+
+        var cartArray = new Array();
+        // If javascript shopping cart session is not empty
+        if (sessionStorage.getItem('shopping-cart')) {
+            cartArray = JSON.parse(sessionStorage.getItem('shopping-cart'));
+        }
+        cartArray.push(cartItemJSON);
+
+        console.log("-----------------------------")
+        console.log("cartArray")
+        console.log(cartArray)
+
+
+        var cartJSON = JSON.stringify(cartArray);
+        console.log("-----------------------------")
+        console.log("cartJSON")
+        console.log(cartJSON)
+        document.getElementById("cartVar").value = cartJSON
+        if(cartArray.length <= 7){
+            sessionStorage.setItem('shopping-cart', cartJSON);
+        }else{
+            document.getElementById('cartAlertMsg').hidden=false;
+			document.getElementById('cartAlertMsg').innerHTML = "Sorry, I can allow maximum 7 memes.";
+        }
+        showCartTable();
+    }
+
+    var viewHTML="";
+
+    function showCartTable() {
+
+	var itemCount = 0;
+	var grandTotal = 0;
+
+	var price = 0;
+	var quantity = 0;
+	var subTotal = 0;
+
+	if (sessionStorage.getItem('shopping-cart')) {
+	    var cartRowHTML = "";
+		var shoppingCart = JSON.parse(sessionStorage.getItem('shopping-cart'));
+		itemCount = shoppingCart.length;
+        //if (itemCount < 4){
+            //Iterate javascript shopping cart array
+            shoppingCart.forEach(function(item) {
+                var cartItem = JSON.parse(item);
+
+                cartRowHTML += //"<tr>" +
+                    "<td>"
+                    + "<div class=\"card mb-3\">"
+                    + "<div class=\"card-body\">"
+                    + "<div class=\"d-flex justify-content-between\">"
+                    + "<div class=\"d-flex flex-row align-items-center\">"
+                    + "<div>\n"
+                    + "<img src=\""+cartItem.productName+"\" class=\"img-fluid rounded-3\" style=\"width: 100px;\" \>"
+
+                    + "</div></div></div></div></div>"
+                    + "</td>" ;
+                    //+ "</tr>";
+
+
+                //grandTotal += subTotal;
+            });
+        if(cartRowHTML){
+		    viewHTML = cartRowHTML;
+		}
+		/*}else{
+			itemCount=3;
+			document.getElementById('cartAlertMsg').hidden=false;
+			document.getElementById('cartAlertMsg').innerHTML = "Sorry, I can allow maximum 7 memes.";
+            // alert(viewHTML);
+			document.getElementById('cartTableBodyRow').innerHTML = viewHTML;
+			// TODO: fire a alert message
+		}*/
+
+	}
+    viewHTML = cartRowHTML;
+	$('#cartTableBodyRow').html(cartRowHTML);
+	//$('#itemCount').text(itemCount);
+	$('#lblCount').text(itemCount);
+	$('#lblCounte').text(itemCount);
+	//$('#totalAmount').text("$" + grandTotal.toFixed(2));
+}
+
+function emptyCart() {
+	if (sessionStorage.getItem('shopping-cart')) {
+		// Clear JavaScript sessionStorage by index
+		sessionStorage.removeItem('shopping-cart');
+		showCartTable();
+		cartRowHTML = "";
+		viewHTML="";
+		document.getElementById('cartAlertMsg').hidden=true;
+		document.getElementById('cartTableBodyRow').innerHTML = viewHTML;
+	}
+}
+function viewCart() {
+
+	$('#cartTableBodyRow').html(viewHTML);
+	showCartTable();
+}
+
+$(document).ready(function() {
+    var shoppingCart = JSON.parse(sessionStorage.getItem('shopping-cart'));
+    itemCount = shoppingCart.length;
+    $('#cartTableBodyRow').html(viewHTML);
+    $('#lblCount').text(itemCount);
+	$('#lblCounte').text(itemCount);
+	showCartTable();
+
+});
+
+function checkAnalyse()
+{
+    var shoppingCart = JSON.parse(sessionStorage.getItem('shopping-cart'));
+    var postArray = "" ;
+    shoppingCart.forEach(function(item) {
+          var cartItem = JSON.parse(item);
+          postArray+=cartItem.productName.replace("static/EXCLAIM_Samples/","") +"\t";
+    });
+
+    const form = document.createElement('form');
+    form.method = "POST";
+    form.action = "{{ url_for('upload') }}";
+    form.enctype="multipart/form-data";
+
+    const hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = 'image';
+
+    hiddenField.value = postArray;
+
+    form.appendChild(hiddenField);
+    document.body.appendChild(form);
+    form.submit();
+
+}
+
+
+</script>
+
+<section id="section-limitation" class="bg-light text-primary">
+    <div class="container">
+        <div class="col-md-9">
+            <br>
+            <br>
+            <br>
+            <h3 class="h5 ftco-subheading mb-5 text-dark" data-aos="fade-up" data-aos-delay="600">
+                <strong>EXCLAIM:</strong> g<strong>E</strong>nerating e<strong>X</strong>planations for visual
+                semanti<strong>C</strong> ro<strong>L</strong>e
+                l<strong>A</strong>beling <strong>I</strong>n <strong>M</strong>emes</h3>
+            <div class="row">
+                <h5 class="text-info">Select image(s) from categories below and <strong>CLICK</strong> "Check and Analyse".</h5>
+                <br>
+                <div class="row align-items-center ftco-vh-100">
+                    <div class="btn-group">
+                        <!--TODO: Dynamic -->
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu1"
+                                    data-toggle="dropdown">
+                                <h6>Example with Single Entity</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent1 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu2"
+                                    data-toggle="dropdown">
+                                <h6>Example with Two Entities</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent2 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu3"
+                                    data-toggle="dropdown">
+                                <h6>Example with Three Entities</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent3 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="menu4"
+                                    data-toggle="dropdown">
+                                <h6>Example with Four Entities</h6>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="menu1">
+                                {% for item in data.ent4 %}
+                                <li class="list-group-item list-group-item-light" role="presentation">
+                                    <button class="btn" onclick="showCart('{{item}}');">
+                                        <img src="{{item}}" width="200px" class="img-thumbnail">
+                                    </button>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" role="alert" id="cartAlertMsg" hidden></div>
+                    <form action="{{ url_for('processSelection') }}" method="post" class="was-validated"
+                          enctype="multipart/form-data">
+                    <div class="container py-5 h-100">
+                        <div>
+                        <button class="btn btn-danger" type="button" onClick="emptyCart()" id="btnEmpty">Reset Selection
+                                    <span class="badge badge-light" id="lblCounte">All</span>
+                                </button>
+                                <button class="btn btn-success" type="button" onClick="viewCart()" id="btnView">Selected
+                                    <span class="badge badge-light" id="lblCount"></span>
+                                </button>
+
+                        </div>
+                        <div class="txt-heading">
+                                    <h2>Selected Memes</h2>
+                                </div>
+                                <div class="border-top my-3"></div>
+                        <div class="row d-flex justify-content-center align-items">
+
+                            <div id="shopping-cart">
+
+
+
+                                <table class="tbl-cart" cellpadding="10" cellspacing="1">
+                                    <thead>
+
+                                    </thead>
+                                    <!--  Cart table to load data on "add to cart" action -->
+                                    <tbody id="cartTableBody">
+                                    <tr id="cartTableBodyRow">
+                                        <td>
+                                            <div class="text-secondary"> Please Select Memes from the dropdown </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+
+                                    </tfoot>
+                                </table>
+                                <div class="border-top my-3"></div>
+                            </div>
+                            <!-- Product gallery shell to load HTML from JavaScript code -->
+
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" type="submit" >Check & Analyse
+                                    <span class="badge badge-light" id="lblCountC">>></span>
+                                </button>
+                            <input type="hidden" id="cartVar" name="cartholder" value=""/>
+                        </div>
+                    </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+
+{% endblock %}
