@@ -1,6 +1,7 @@
-# memeExplain
-memeExplanation
+## System Demo: EXCLAIM - gEnerating eXplanations for visual semantiC roLe lAbeling In Memes
 
-![EXCLAIM DEMO_page-0001](https://github.com/user-attachments/assets/a061befb-959f-45b6-ac02-16e71e3fd461)
-![EXCLAIM DEMO_page-0002](https://github.com/user-attachments/assets/4650428e-7b8d-4592-a42b-1cdcdbb75862)
-![EXCLAIM DEMO_page-0003](https://github.com/user-attachments/assets/6896fbf1-bf56-47e9-a4b9-07a98993776b)
+![EXCLAIM DEMO_page-0001](https://github.com/user-attachments/assets/96349f09-93db-4309-bbec-baf4c9405eb7)
+![EXCLAIM DEMO_page-0002](https://github.com/user-attachments/assets/f6da7fb1-3fa7-4487-a0fb-dbe88b76d82a)
+![EXCLAIM DEMO_page-0003](https://github.com/user-attachments/assets/f028f112-8f87-40cc-9715-012b85b67aca)
+
+
